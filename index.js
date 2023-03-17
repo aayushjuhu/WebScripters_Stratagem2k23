@@ -91,5 +91,7 @@ app.use('/', userRoutes)
 app.use('/dashboard', dashboardRoute)
 app.use('/generate-coupons', couponRoute)
 app.use('/copoun/:comp_id', verifyRoute)
-
+app.get('/final', async (req, res) => {
+  res.render('users/finale')
+})
 module.exports = app

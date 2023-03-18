@@ -1,0 +1,40 @@
+.head {
+    font-size: 3rem;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+}
+
+.cam {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 5rem auto;
+}
+
+#video, #canvas {
+    width: 480px;
+    height: 360px;
+    border-radius: 8px;
+    transform: rotateY(180deg);
+}
+
+.capture {
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    margin: 3rem;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: white;
+    color: black;   
+    transform: scale(1.15);
+}

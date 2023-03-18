@@ -9,6 +9,9 @@ const AppointmentSchema = new Schema({
 	patient_id: {
 		type: Schema.Types.ObjectId,
 		ref: "Patient"
+	},
+	token: {
+		type: String
 	}
 });
 

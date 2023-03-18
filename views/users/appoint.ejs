@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Appointment</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <style>
+    tr {
+      color: black;
+      background-color: white;
+    }
+  </style>
+
+</head>
+<body style="background-image: url(background.jpg);">
+
+    <form method="POST" novalidate onsubmit="return validate() " action="/appointments" class="box" >
+        <h2>Get Appointment</h2>
+        <p class="text-muted">Enter following details carefully</p>
+
+        <input type="text" name="hospital_id" placeholder="Hospital ID" value="<% hosp[0].Hosp_id %>">
+        <input type="text" name="patient_id" placeholder="Patient ID" value="<% user[0] %>">
+
+
+        <button type="submit" id="btn-submit">Get</button>
+
+    </form>
+
+</body>
+</html>       

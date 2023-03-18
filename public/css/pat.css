@@ -49,9 +49,9 @@ body {
 
 .box input[type="text"]:focus,
 .box input[type="password"]:focus {
-	width: 300px;
-  position: relative;
-	margin-left: 40px;
+	/* width: 300px; */
+  /* position: relative; */
+	/* margin-left: 40px; */
 	border-color: #ffd700;
 }
 

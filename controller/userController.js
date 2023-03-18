@@ -174,9 +174,11 @@ module.exports.dashboard = async (req, res) => {
 	var id;
 	var patient;
 	var patients = [];
+	// var token = [];
 	console.log(appointments.length);
 	for (var i = 0; i < appointments.length; i++) {
 		id = appointments[i].patient_id.toString();
+    // token.push(appointments[i].token);
 
 		patient = await Patient.find({ Patient_id: id });
 		patients.push(patient);

@@ -176,9 +176,23 @@ app.post('/upload/:id', upload1.single('photo'), async (req, res) => {
   // Save the photo to the database
 })
 
+app.get("/appointment/hosp", async (req, res) => {
+	const hosp = await Hospital.find({  });
+	const user = req.user._id;
+	res.render("users/appoint", { hosp, user });
+});
 
 app.post("/appointments", async (req, res) => {
 	const { hospital_id, patient_id } = req.body;
+
+  function generateToken() {
+		const token = Math.floor(1000 + Math.random() * 9000);
+		return token.toString();
+  }
+
+  // Usage example:
+  const token = generateToken();
+  console.log(token);
 
 	// Validate hospital_id and patient_id
 	if (!hospital_id || !patient_id) {
@@ -202,7 +216,8 @@ app.post("/appointments", async (req, res) => {
 	// Create appointment
 	const appointment = new Appointment({
 		hospital_id: hospital_id,
-		patient_id: patient_id
+		patient_id: patient_id,
+    token: token
 	});
 	await appointment.save();
 

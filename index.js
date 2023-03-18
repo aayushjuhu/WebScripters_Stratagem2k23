@@ -101,7 +101,7 @@ app.get('/final', async (req, res) => {
 app.get('/users/photo', async (req, res) => {
   res.render('users/photo')
 })
-app.get('/verify/user', async (req, res) => {
+app.get('/verify/user/:id', async (req, res) => {
   res.render('users/verify')
 })
 const FLASK_API_URL = 'http://localhost:5000/upload-photo'

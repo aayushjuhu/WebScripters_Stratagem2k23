@@ -10,10 +10,19 @@ body {
   background-color: #f9f3f8;
 }
 .navbar {
-  background-color: #f6f4f9;
-  padding: 0px 80px;
+  background-color: #000000e3;
+  padding: 10px 80px;
   display: flex;
   justify-content: space-between;
+}
+.nav-title {
+  font-weight: 900;
+  font-size: 2rem;
+  background: linear-gradient(90deg, #f5be0a 0%, #ffed8a 50.83%, #f5be0a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 }
 .pages {
   display: flex;

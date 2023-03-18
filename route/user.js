@@ -1,22 +1,25 @@
-const express = require("express");
-const router = express.Router();
-const users = require("./../controller/userController");
-const passport = require("passport");
+const express = require('express')
+const router = express.Router()
+const users = require('./../controller/userController')
+const passport = require('passport')
 
-router.route("/register").get(users.renderRegister).post(users.register);
-
+router.route('/register/patient').get(users.renderRegister).post(users.register)
 router
-  .route("/login")
+  .route('/register/hosp')
+  .get(users.renderRegisterHosp)
+  .post(users.registerhosp)
+router
+  .route('/login')
   .get(users.renderLogin)
   .post(
-    passport.authenticate("local", {
-      failureRedirect: "/login",
+    passport.authenticate('local', {
+      failureRedirect: '/login',
       failureMessage: true,
       keepSessionInfo: true,
     }),
-    users.login
-  );
+    users.login,
+  )
 
-router.get("/logout", users.logout);
+router.get('/logout', users.logout)
 
-module.exports = router;
+module.exports = router

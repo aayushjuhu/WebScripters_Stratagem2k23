@@ -21,7 +21,7 @@
   <body>
     <main class="container" mt="5"><%- include('../partials/flash')%></main>
     <nav class="navbar">
-      <img src="/images/logo.png" width="200px  " alt="logo" />
+        <div class="nav-title">MedEasy</div>
 
       <div class="pages">
         <span class="page"><a href="/" class="active">Home</a></span>
@@ -74,7 +74,7 @@
                     <form
                         method="POST"
                         novalidate
-                        action="/register"
+                        action="/register/patient"
                         onsubmit="return validateForm() "
                         class="box"
                     >

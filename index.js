@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV != 'production') {
   require('dotenv').config()
 }
-
+const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
 const express = require('express')
@@ -21,7 +21,11 @@ const flash = require('connect-flash')
 const verifyRoute = require('./route/verify')
 const dashboardRoute = require('./route/dashboard')
 const cors = require('cors')
-
+const multer = require('multer')
+const FormData = require('form-data')
+const axios = require('axios')
+const upload = multer()
+const patient = require('./models/Patient')
 app.use(
   cors({
     origin: '*',
@@ -83,8 +87,8 @@ app.use((req, res, next) => {
 
 app.use(express.static(__dirname + '/public'))
 
-app.get('/', (req, res) => {
-  res.render('coupon/home.ejs')
+app.get('/', async (req, res) => {
+  res.render('users/index')
 })
 
 app.use('/', userRoutes)
@@ -94,4 +98,73 @@ app.use('/copoun/:comp_id', verifyRoute)
 app.get('/final', async (req, res) => {
   res.render('users/finale')
 })
+app.get('/users/photo', async (req, res) => {
+  res.render('users/photo')
+})
+app.get('/verify/user', async (req, res) => {
+  res.render('users/verify')
+})
+const FLASK_API_URL = 'http://localhost:5000/upload-photo'
+app.post('/upload-photo', upload.single('photo'), (req, res) => {
+  const photo = req.file
+  console.log('Received photo:', photo)
+
+  // Send photo to Flask API
+  const formData = new FormData()
+  formData.append('photo', photo.buffer, { filename: photo.originalname })
+  axios
+    .post(FLASK_API_URL, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => {
+      console.log('Photo sent to Flask API successfully', response.body)
+      res.sendStatus(200) // Send response indicating success
+    })
+    .catch((error) => {
+      console.error('Error sending photo to Flask API:', error)
+      res.sendStatus(500) // Send response indicating error
+    })
+})
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, './uploads')
+  },
+  filename: function (req, file, callback) {
+    callback(
+      null,
+      'Patient_' +
+        req.params.id +
+        '-' +
+        Date.now() +
+        path.extname(file.originalname),
+    )
+  },
+})
+const upload1 = multer({ storage: storage })
+
+// Define a route to handle file uploads
+app.post('/upload/:id', upload1.single('photo'), async (req, res) => {
+  // Read the file into memory
+  const data = fs.readFileSync(req.file.path)
+  const id = req.params.id
+  // Create a new Photo document
+  const photo = {
+    name: req.file.originalname,
+    data: data,
+    contentType: req.file.mimetype,
+  }
+  try {
+    const pi = await patient.updateOne(
+      { Patient_id: id },
+      { $set: { photo: photo } },
+    )
+  } catch (error) {
+    console.log('error')
+  }
+  res.send('success')
+  // Save the photo to the database
+})
+
 module.exports = app

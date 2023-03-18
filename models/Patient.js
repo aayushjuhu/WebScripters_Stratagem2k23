@@ -51,6 +51,11 @@ const PatientSchema = new Schema({
     type: Number,
     required: [true, 'A pin code is required'],
   },
+  photo: {
+    name: String,
+    data: Buffer,
+    contentType: String,
+  },
   Patient_id: [
     {
       type: Schema.Types.ObjectId,

@@ -6,8 +6,15 @@ const app = express()
 const Order = require('./../models/Order')
 const User = require('./../models/user')
 const Patient = require('./../models/Patient')
+const Hospital = require('./../models/Hosp')
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
 module.exports.renderRegister = (req, res) => {
   res.render('users/finale')
+}
+module.exports.renderRegisterHosp = (req, res) => {
+  res.render('users/hospreg')
 }
 
 module.exports.register = async (req, res, next) => {
@@ -17,7 +24,7 @@ module.exports.register = async (req, res, next) => {
       email,
       username,
       password,
-      comp_type,
+
       fname,
       frname,
       lname,
@@ -31,7 +38,8 @@ module.exports.register = async (req, res, next) => {
       add,
       zc,
     } = req.body
-    console.log(comp_type)
+
+    comp_type = 'hosp'
     const user = new User({ email, username, comp_type })
 
     const registeredUser = await User.register(user, password)
@@ -54,12 +62,40 @@ module.exports.register = async (req, res, next) => {
     })
     req.login(registeredUser, (err) => {
       if (err) return next(err)
+      res.render('users/photo', { id: Patient_id })
+    })
+  } catch (e) {
+    req.flash('error', `${e.message}`)
+    console.log(e)
+    res.redirect('/register/patient')
+  }
+}
+module.exports.registerhosp = async (req, res, next) => {
+  try {
+    console.log(req.body)
+    const { email, username, password, hname, add, phn } = req.body
+
+    const comp_type = 'hosp'
+    const user = new User({ email, username, comp_type })
+
+    const registeredUser = await User.register(user, password)
+    const Hosp_id = registeredUser._id.toString()
+    console.log(registeredUser._id.toString())
+    const patientData = await Hospital.create({
+      Hosp_id,
+      hname,
+
+      add,
+      phn,
+    })
+    req.login(registeredUser, (err) => {
+      if (err) return next(err)
       res.redirect('/dashboard')
     })
   } catch (e) {
     req.flash('error', `${e.message}`)
     console.log(e)
-    res.redirect('register')
+    res.redirect('register/hosp')
   }
 }
 

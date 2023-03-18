@@ -29,7 +29,7 @@
 
     <div class="pages">
       <span class="page"><a href="/" class="active">Home</a></span>
-      <span class="page"><a href="/register/patient">Register</a></span>
+      <span class="page"><a href="/login">Login</a></span>
     </div>
   </nav>
  
@@ -70,31 +70,28 @@
       <div class="col-md-6">
         <div class="card shadow-lg">
 
-          <form
-method="POST"
-novalidate
-onsubmit="return validate() "
-action="/login"
-class="box"
->
+          <form method="POST" novalidate action="/register/hosp" onsubmit="return validateForm() " class="box">
             <h2>Hospital Registration</h2>
             <p class="text-muted">Enter following details carefully</p>
             <div class="row">
-              
+              <div class="col-md-12">
+                <input type="text" name="hname" placeholder="Hospital Name">
+              </div>
               <div class="col-md-6">
-              
+                <input type="address" name="add" placeholder="Address">
+                <input type="contact" name="phn" placeholder="Phone No.">
                 <input type="text" name="username" placeholder="User">
               </div>
               <div class="col-md-6">
-              
+                <input type="text" name="email" placeholder="Email">
                 <input type="text" name="password" placeholder="Password">
-            
+                <input type="text" name="cpassword" placeholder="Confirm Password">
               </div>
               
             </div>
 
 
-            <button type="submit" id="btn-submit">Login</button>
+            <button type="submit" id="btn-submit">Register</button>
 
           </form>
         </div>
@@ -144,11 +141,3 @@ class="box"
 <script src="/javascript/register.js"></script>
 
 </html>
-<!-- <form
-method="POST"
-novalidate
-onsubmit="return validate() "
-action="/login"
->
-<button type="submit" id="btn-submit">Login</button> -->
-                    

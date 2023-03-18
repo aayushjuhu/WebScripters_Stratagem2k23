@@ -10,11 +10,12 @@ def upload_photo():
         return 'No photo provided', 400
 
     # Save photo to disk (optional)
-    photo.save('phot1.jpg')
+    photo[0].save('phot1.jpg')
+    photo[1].save('phot2.jpg')
    
 
 #Load the images containing faces
-    image1 = face_recognition.load_image_file("./amy3.jpg")
+    image1 = face_recognition.load_image_file("./phot2.jpg")
     image2 = face_recognition.load_image_file("./phot1.jpg")
 
     # #Locate the faces in the images

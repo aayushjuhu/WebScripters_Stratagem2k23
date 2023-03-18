@@ -25,7 +25,9 @@ const multer = require('multer')
 const FormData = require('form-data')
 const axios = require('axios')
 const upload = multer()
-const patient = require('./models/Patient')
+const Patient = require('./models/Patient')
+const Hospital = require("./models/Hosp");
+const Appointment = require("./models/Appointment");
 app.use(
   cors({
     origin: '*',
@@ -101,17 +103,20 @@ app.get('/final', async (req, res) => {
 app.get('/users/photo', async (req, res) => {
   res.render('users/photo')
 })
-app.get('/verify/user', async (req, res) => {
-  res.render('users/verify')
+app.get('/verify/user/:id', async (req, res) => {
+  const id = req.params.id
+  res.render('users/verify', {id})
 })
 const FLASK_API_URL = 'http://localhost:5000/upload-photo'
-app.post('/upload-photo', upload.single('photo'), (req, res) => {
+app.post('/upload-photo/:id', upload.single('photo'), async (req, res) => {
   const photo = req.file
   console.log('Received photo:', photo)
-
+  const photo2 = await Patient.find({Patient_id: req.params.id})
   // Send photo to Flask API
   const formData = new FormData()
   formData.append('photo', photo.buffer, { filename: photo.originalname })
+  console.log(photo2);
+  formData.append('photo2', photo2[0].photo.data, { filename: photo2[0].photo.name })
   axios
     .post(FLASK_API_URL, formData, {
       headers: {
@@ -171,4 +176,41 @@ app.post('/upload/:id', upload1.single('photo'), async (req, res) => {
   // Save the photo to the database
 })
 
+
+app.post("/appointments", async (req, res) => {
+	const { hospital_id, patient_id } = req.body;
+
+	// Validate hospital_id and patient_id
+	if (!hospital_id || !patient_id) {
+		return res
+			.status(400)
+			.json({ error: "hospital_id and patient_id are required" });
+	}
+
+	// Check if hospital exists
+	const hospital = await Hospital.find({ Hosp_id: hospital_id });
+	if (!hospital) {
+		return res.status(400).json({ error: "Invalid hospital_id" });
+	}
+
+	// Check if patient exists
+	const patient = await Patient.find({ Patient_id: patient_id });
+	if (!patient) {
+		return res.status(400).json({ error: "Invalid patient_id" });
+	}
+
+	// Create appointment
+	const appointment = new Appointment({
+		hospital_id: hospital_id,
+		patient_id: patient_id
+	});
+	await appointment.save();
+
+	return res
+		.status(200)
+		.json({ message: "Appointment created successfully" });
+});
+
+
 module.exports = app
+

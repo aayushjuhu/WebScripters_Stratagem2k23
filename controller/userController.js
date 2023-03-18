@@ -1,0 +1,141 @@
+const { urlencoded } = require('express')
+const express = require('express')
+const router = express.Router()
+const passport = require('passport')
+const app = express()
+const Order = require('./../models/Order')
+const User = require('./../models/user')
+const Patient = require('./../models/Patient')
+const Hospital = require('./../models/Hosp')
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
+module.exports.renderRegister = (req, res) => {
+  res.render('users/finale')
+}
+module.exports.renderRegisterHosp = (req, res) => {
+  res.render('users/hospreg')
+}
+
+module.exports.register = async (req, res, next) => {
+  try {
+    console.log(req.body)
+    const {
+      email,
+      username,
+      password,
+
+      fname,
+      frname,
+      lname,
+      ht,
+      gen,
+      st,
+      adno,
+      mname,
+      phn,
+      wt,
+      add,
+      zc,
+    } = req.body
+
+    comp_type = 'hosp'
+    const user = new User({ email, username, comp_type })
+
+    const registeredUser = await User.register(user, password)
+    const Patient_id = registeredUser._id.toString()
+    console.log(registeredUser._id.toString())
+    const patientData = await Patient.create({
+      Patient_id,
+      fname,
+      frname,
+      lname,
+      ht,
+      gen,
+      st,
+      adno,
+      mname,
+      phn,
+      wt,
+      add,
+      zc,
+    })
+    req.login(registeredUser, (err) => {
+      if (err) return next(err)
+      res.render('users/photo', { id: Patient_id })
+    })
+  } catch (e) {
+    req.flash('error', `${e.message}`)
+    console.log(e)
+    res.redirect('/register/patient')
+  }
+}
+module.exports.registerhosp = async (req, res, next) => {
+  try {
+    console.log(req.body)
+    const { email, username, password, hname, add, phn } = req.body
+
+    const comp_type = 'hosp'
+    const user = new User({ email, username, comp_type })
+
+    const registeredUser = await User.register(user, password)
+    const Hosp_id = registeredUser._id.toString()
+    console.log(registeredUser._id.toString())
+    const patientData = await Hospital.create({
+      Hosp_id,
+      hname,
+
+      add,
+      phn,
+    })
+    req.login(registeredUser, (err) => {
+      if (err) return next(err)
+      res.redirect('/dashboard')
+    })
+  } catch (e) {
+    req.flash('error', `${e.message}`)
+    console.log(e)
+    res.redirect('register/hosp')
+  }
+}
+
+module.exports.renderLogin = (req, res) => {
+  res.render('users/login')
+}
+
+module.exports.login = (req, res) => {
+  try {
+    console.log('Hello Inside Login controller')
+    console.log(req.user)
+    res.redirect('/dashboard')
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+module.exports.logout = (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      console.log(err)
+    }
+    console.log('Logging Out')
+    req.flash('success', 'Goodbye!')
+    res.redirect('/')
+  })
+}
+
+module.exports.dashboard = async (req, res) => {
+  const user = req.user
+  const users1 = await User.findById(req.user._id).populate('coupon')
+  var total_coupons = 0
+  users1.coupon.forEach((e) => {
+    console.log(total_coupons)
+    total_coupons += e.numCodes
+  })
+  var bill = total_coupons * 3
+  users1.balance_bill = bill
+  var user_k = new User(users1)
+  await user_k.save()
+  const users = await User.findById(req.user._id).populate('coupon')
+  res.render('coupon/dashboard', { users, total_coupons })
+}
